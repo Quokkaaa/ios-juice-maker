@@ -2,7 +2,6 @@
 //  JuiceMaker - FruitStore.swift
 //  Created by yeha.
 //  Copyright © yagom academy. All rights reserved.
-//
 
 import Foundation
 
@@ -16,7 +15,7 @@ class FruitStore {
         case pineapple
         case mango
     }
-    var fruitStockList: [Fruit: FruitStock] = [:]
+    private var fruitStockList: [Fruit: FruitStock] = [:]
     
     init(initialFruitStock: FruitStock = 10) {
         for fruitName in Fruit.allCases {
@@ -24,15 +23,21 @@ class FruitStore {
         }
     }
     
-    func changeFruitStock(fruitName: Fruit, changingNumber: Int) {
-        guard let currentFruitStock = fruitStockList[fruitName] else { return }
+    func changeFruitStock(fruitName: Fruit, changingNumber: Int) throws {
+        guard let currentFruitStock = fruitStockList[fruitName] else {
+            throw FruitError.isNotExistValue
+        }
         fruitStockList[fruitName] = (currentFruitStock + changingNumber)
     }
-    
-    func isHaveEnoughStock(for menu: JuiceMaker.Juice) -> Bool {
+    func isHaveEnoughStock(for menu: JuiceMaker.Juice) throws -> Bool {
         for (fruitName, juiceIngredient) in menu.recipe {
-            guard let fruitStock = fruitStockList[fruitName],
-                  fruitStock >= juiceIngredient else { return false }
+            guard let fruitStock = fruitStockList[fruitName] else {
+                throw FruitError.outOfStock
+            }
+            guard fruitStock >= juiceIngredient else {
+                throw FruitError.outOfStock
+            }
+            
         }
         return true
     }

@@ -2,14 +2,13 @@
 //  JuiceMaker - JuiceMaker.swift
 //  Created by Quokkaaa.
 //  Copyright © yagom academy. All rights reserved.
-//
 
 import Foundation
 
 struct JuiceMaker {
     typealias JuiceIngredient = Int
     
-    var fruitStore = FruitStore()
+    private var fruitStore = FruitStore()
     
     enum Juice {
         case strawberryJuice
@@ -19,7 +18,7 @@ struct JuiceMaker {
         case strawberryBananaJuice
         case mangoJuice
         case mangoKiwiJuice
-
+        
         var recipe: [FruitStore.Fruit: JuiceIngredient] {
             switch self {
             case .strawberryJuice:
@@ -40,14 +39,22 @@ struct JuiceMaker {
         }
     }
     
-    func orderJuice(for menu: Juice) {
-        guard fruitStore.isHaveEnoughStock(for: menu) else { return }
-        makeJuice(for: menu)
+    func orderJuice(for menu: Juice) throws {
+        guard try fruitStore.isHaveEnoughStock(for: menu) else {
+            throw FruitError.outOfStock
+        }
+        try makeJuice(for: menu)
     }
     
-    func makeJuice(for menu: Juice) {
+    func makeJuice(for menu: Juice) throws {
         for (fruitName, juiceIngredient) in menu.recipe {
-            fruitStore.changeFruitStock(fruitName: fruitName, changingNumber: juiceIngredient)
+        do {
+            try fruitStore.changeFruitStock(fruitName: fruitName, changingNumber: juiceIngredient)
+            } catch FruitError.isNotExistValue {
+                print("값이 존재하지 않음!")
+            }
         }
     }
 }
+
+
