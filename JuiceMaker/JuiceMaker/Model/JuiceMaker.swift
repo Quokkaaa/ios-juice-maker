@@ -41,15 +41,15 @@ struct JuiceMaker {
     }
     
     func makeJuice(for menu: Juice) {
-        var count: Int = 0
-        let juiceIngredientCount: Int = menu.recipe.count
+        var fruitInStock: Int = 0
+        let juiceIngr*edientCount: Int = menu.recipe.count
         
         for (fruitName, juiceIngredient) in menu.recipe {
             guard (try? fruitStore.isHaveEnoughStock(fruitName: fruitName, juiceIngredient: juiceIngredient)) != nil else {
                 break
             }
-            count += 1
-            guard count == juiceIngredientCount,
+            fruitInStock += 1
+            guard fruitInStock == juiceIngredientCount,
                   (try? fruitStore.changeFruitStock(fruitName: fruitName, changingNumber: juiceIngredient)) != nil else {
                 continue
             }
