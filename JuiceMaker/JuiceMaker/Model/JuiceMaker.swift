@@ -40,14 +40,14 @@ struct JuiceMaker {
         }
     }
     
-    func orderJuice(for menu: Juice) {
-        guard fruitStore.isHaveEnoughStock(for: menu) else { return }
-        makeJuice(for: menu)
-    }
-    
     func makeJuice(for menu: Juice) {
         for (fruitName, juiceIngredient) in menu.recipe {
-            fruitStore.changeFruitStock(fruitName: fruitName, changingNumber: juiceIngredient)
+            do {
+                try fruitStore.isHaveEnoughStock(fruitName: fruitName, juiceIngredient: juiceIngredient)
+                try fruitStore.changeFruitStock(fruitName: fruitName, changingNumber: juiceIngredient)
+            } catch {
+                print("재고 부족")
+            }
         }
     }
 }
